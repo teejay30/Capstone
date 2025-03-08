@@ -161,6 +161,24 @@ const getAllPosts = async (req, res) => {
     }
 };
 
+// Sort Posts by Category
+const sortPostsByCategory = async (req, res) => {
+    const { category } = req.params; // Extract category from the URL
+
+    try {
+        // Fetch posts filtered by category
+        const posts = await Post.find({ category: category }).sort({ createdAt: -1 }); // Sort by date (newest first)
+
+        if (!posts || posts.length === 0) {
+            return res.status(404).json({ message: "No posts found in this category" });
+        }
+
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(500).json({ message: "Error sorting posts by category", error });
+    }
+};
+
 // Sort Posts by Date (Week, Month, Year)
 const sortPostsByDate = async (req, res) => {
     const { period } = req.params; // 'week', 'month', or 'year'
@@ -189,6 +207,40 @@ const sortPostsByDate = async (req, res) => {
     }
 };
 
+// Sort Posts by Category and Date
+const sortPostsByCategoryAndDate = async (req, res) => {
+    const { category, period } = req.params; // Extract category and period from the URL
+    const currentDate = new Date();
+    let startDate;
+
+    // Determine the start date based on the period
+    switch (period) {
+        case "week":
+            startDate = new Date(currentDate.setDate(currentDate.getDate() - 7));
+            break;
+        case "month":
+            startDate = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+            break;
+        case "year":
+            startDate = new Date(currentDate.setFullYear(currentDate.getFullYear() - 1));
+            break;
+        default:
+            return res.status(400).json({ message: "Invalid period" });
+    }
+
+    try {
+        // Fetch posts filtered by category and within the specified date range
+        const posts = await Post.find({
+            category: category, // Filter by category
+            createdAt: { $gte: startDate }, // Filter by date
+        }).sort({ createdAt: -1 }); // Sort by date (newest first)
+
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(500).json({ message: "Error sorting posts", error });
+    }
+};
+
 module.exports = {
     createPost,
     getPost,
@@ -201,4 +253,6 @@ module.exports = {
     getMostPopularPosts,
     sortPostsByDate,
     getAllPosts,
+    sortPostsByCategory,
+    sortPostsByCategoryAndDate,
 };
