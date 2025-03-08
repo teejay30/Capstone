@@ -16,6 +16,11 @@ app.use((req, res, next) => {
     next();
 });
 
+// Root route
+app.get("/", (req, res) => {
+    res.send("Welcome to the API!");
+});
+
 // routes
 app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
@@ -24,13 +29,11 @@ app.use("/api/post", postRoutes);
 mongoose
     .connect(process.env.MONGO_URI)
     .then(() => {
+        console.log("Connected to MongoDB"); // For Debug
         // listen for request
         const port = process.env.PORT || 5000; // Dinagdag ko lang to  di ko kasi ma run
-        app.listen(process.env.PORT, () => {
-            console.log(
-                "connected to DATABASE & listening on port",
-                process.env.PORT
-            );
+        app.listen(port, () => {
+            console.log("connected to DATABASE & listening on port",port);   
         });
     })
     .catch((error) => {
