@@ -10,6 +10,7 @@ const {
     getRecentPosts,
     getMostPopularPosts,
     sortPostsByDate,
+    getAllPosts,
 } = require("../controllers/postController");
 
 const router = express.Router();
@@ -37,5 +38,6 @@ router.get("/featured", getFeaturedPosts); // Get featured posts
 router.get("/recent", getRecentPosts); // Get recent posts
 router.get("/popular", getMostPopularPosts); // Get most popular posts
 router.get("/sort/:period", sortPostsByDate); // Sort posts by date (week, month, year)
+router.get("/posts", getAllPosts); // Route to get all posts
 
 module.exports = router;

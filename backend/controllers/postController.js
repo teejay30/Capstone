@@ -151,6 +151,16 @@ const getMostPopularPosts = async (req, res) => {
     }
 };
 
+// Get All Posts
+const getAllPosts = async (req, res) => {
+    try {
+        const posts = await Post.find().sort({ createdAt: -1 }); // Fetch all posts and sort by creation date
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching all posts", error });
+    }
+};
+
 // Sort Posts by Date (Week, Month, Year)
 const sortPostsByDate = async (req, res) => {
     const { period } = req.params; // 'week', 'month', or 'year'
