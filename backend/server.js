@@ -2,8 +2,6 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
-const mongoURI = process.env.MONGO_URI;
-const port = process.env.PORT || 5000;
 const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
 
@@ -27,6 +25,7 @@ mongoose
     .connect(process.env.MONGO_URI)
     .then(() => {
         // listen for request
+        const port = process.env.PORT || 5000; // Dinagdag ko lang to  di ko kasi ma run
         app.listen(process.env.PORT, () => {
             console.log(
                 "connected to DATABASE & listening on port",
@@ -35,5 +34,5 @@ mongoose
         });
     })
     .catch((error) => {
-        console.log(error);
+        console.log("MongoDB connection error:",error);
     });
